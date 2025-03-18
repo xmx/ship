@@ -43,7 +43,8 @@ func (r *lockRouter) Path(name string, params ...interface{}) string {
 }
 
 func (r *lockRouter) Add(name, path, method string, handler interface{}) (
-	int, error) {
+	int, error,
+) {
 	r.lock.Lock()
 	num, err := r.router.Add(name, path, method, handler)
 	r.lock.Unlock()
@@ -58,7 +59,8 @@ func (r *lockRouter) Del(path, method string) (err error) {
 }
 
 func (r *lockRouter) Match(path, method string, ns, vs []string) (
-	interface{}, int) {
+	interface{}, int,
+) {
 	r.lock.RLock()
 	h, n := r.router.Match(path, method, ns, vs)
 	r.lock.RUnlock()

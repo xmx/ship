@@ -158,8 +158,9 @@ func (r *Runner) runStopfs() {
 // Start starts a HTTP server with addr until it is closed.
 //
 // If tlsFiles is not nil, it must be certFile and keyFile. For example,
-//    runner := NewRunner()
-//    runner.Start(":80", certFile, keyFile)
+//
+//	runner := NewRunner()
+//	runner.Start(":80", certFile, keyFile)
 func (r *Runner) Start(addr string, tlsFiles ...string) {
 	var cert, key string
 	if len(tlsFiles) == 2 && tlsFiles[0] != "" && tlsFiles[1] != "" {

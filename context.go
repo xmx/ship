@@ -127,7 +127,7 @@ func (c *Context) Reset() {
 	c.plen = 0
 }
 
-// URL generates a url path by the route path name and provided parameters.
+// URL generates an url path by the route path name and provided parameters.
 //
 // Return "" if there is not the route named name.
 func (c *Context) URL(name string, params ...interface{}) string {
@@ -138,13 +138,13 @@ func (c *Context) URL(name string, params ...interface{}) string {
 // into the field Route of Context.
 //
 // For the handler registered into the underlying Router, it supports
-// three kinds of types as follow:
+// three kinds of types as follows:
 //
 //   - Route
 //   - Handler
 //   - http.Handler
 //   - http.HandlerFunc
-func (c *Context) FindRoute() (ok bool) {
+func (c *Context) FindRoute() bool {
 	h, n := c.Router.Match(c.req.URL.Path, c.req.Method, c.pnames, c.pvalues)
 	if h == nil {
 		return false
@@ -259,12 +259,9 @@ func (c *Context) IsAjax() bool {
 
 // IsWebSocket reports whether HTTP connection is WebSocket or not.
 func (c *Context) IsWebSocket() bool {
-	if c.req.Method == http.MethodGet &&
+	return c.req.Method == http.MethodGet &&
 		c.req.Header.Get(HeaderConnection) == "Upgrade" &&
-		c.req.Header.Get(HeaderUpgrade) == "websocket" {
-		return true
-	}
-	return false
+		c.req.Header.Get(HeaderUpgrade) == "websocket"
 }
 
 // Host returns the host of the request.
@@ -381,7 +378,7 @@ func (c *Context) Scheme() (scheme string) {
 func (c *Context) ClientIP() string {
 	if ip := c.req.Header.Get(HeaderXForwardedFor); ip != "" {
 		return strings.TrimSpace(strings.Split(ip, ",")[0])
-	} else if ip := c.req.Header.Get(HeaderXRealIP); ip != "" {
+	} else if ip = c.req.Header.Get(HeaderXRealIP); ip != "" {
 		return ip
 	} else if ra, _, _ := net.SplitHostPort(c.req.RemoteAddr); ra != "" {
 		return ra
@@ -610,8 +607,10 @@ func (c *Context) MultipartReader() (*multipart.Reader, error) {
 // If the session id does not exist, it returns ErrSessionNotExist.
 func (c *Context) GetSession(id string) (v interface{}, err error) {
 	if id == "" {
-		err = ErrInvalidSession
-	} else if v, err = c.Session.GetSession(id); err == nil && v == nil {
+		return nil, ErrInvalidSession
+	}
+	ctx := c.req.Context()
+	if v, err = c.Session.GetSession(ctx, id); err == nil && v == nil {
 		err = ErrSessionNotExist
 	}
 
@@ -623,7 +622,8 @@ func (c *Context) SetSession(id string, value interface{}) (err error) {
 	if id == "" || value == nil {
 		return ErrInvalidSession
 	}
-	return c.Session.SetSession(id, value)
+	ctx := c.req.Context()
+	return c.Session.SetSession(ctx, id, value)
 }
 
 // DelSession deletes the session from the backend store.
@@ -631,7 +631,8 @@ func (c *Context) DelSession(id string) (err error) {
 	if id == "" {
 		return ErrInvalidSession
 	}
-	return c.Session.DelSession(id)
+	ctx := c.req.Context()
+	return c.Session.DelSession(ctx, id)
 }
 
 //----------------------------------------------------------------------------
@@ -642,8 +643,9 @@ func (c *Context) DelSession(id string) (err error) {
 // then validates whether it is valid or not.
 func (c *Context) Bind(v interface{}) (err error) {
 	if err = c.Binder.Bind(v, c.req); err == nil {
-		if err = c.Defaulter.SetDefault(v); err == nil {
-			err = c.Validator.Validate(v)
+		ctx := c.req.Context()
+		if err = c.Defaulter.SetDefault(ctx, v); err == nil {
+			err = c.Validator.Validate(ctx, v)
 		}
 	}
 	return
@@ -653,8 +655,9 @@ func (c *Context) Bind(v interface{}) (err error) {
 // then validates whether it is valid or not.
 func (c *Context) BindQuery(v interface{}) (err error) {
 	if err = c.QueryBinder(v, c.Queries()); err == nil {
-		if err = c.Defaulter.SetDefault(v); err == nil {
-			err = c.Validator.Validate(v)
+		ctx := c.req.Context()
+		if err = c.Defaulter.SetDefault(ctx, v); err == nil {
+			err = c.Validator.Validate(ctx, v)
 		}
 	}
 	return
@@ -750,7 +753,8 @@ func (c *Context) Blob(code int, contentType string, b []byte) (err error) {
 
 // BlobText sends a string blob response with the status code and the content type.
 func (c *Context) BlobText(code int, contentType string,
-	format string, args ...interface{}) (err error) {
+	format string, args ...interface{},
+) (err error) {
 	c.setContentTypeAndCode(code, contentType)
 	if len(args) > 0 {
 		_, err = fmt.Fprintf(c.res, format, args...)

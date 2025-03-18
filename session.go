@@ -14,14 +14,17 @@
 
 package ship
 
-import "sync"
+import (
+	"context"
+	"sync"
+)
 
 // Session represents an interface about the session.
 type Session interface {
 	// If the session id does not exist, it should return (nil, nil).
-	GetSession(id string) (value interface{}, err error)
-	SetSession(id string, value interface{}) error
-	DelSession(id string) error
+	GetSession(ctx context.Context, id string) (value interface{}, err error)
+	SetSession(ctx context.Context, id string, value interface{}) error
+	DelSession(ctx context.Context, id string) error
 }
 
 // NewMemorySession return a Session implementation based on the memory.
@@ -33,19 +36,19 @@ type memorySession struct {
 	store *sync.Map
 }
 
-func (m memorySession) GetSession(id string) (value interface{}, err error) {
-	if value, ok := m.store.Load(id); ok {
-		return value, nil
+func (m memorySession) GetSession(_ context.Context, id string) (value interface{}, err error) {
+	if val, ok := m.store.Load(id); ok {
+		return val, nil
 	}
 	return
 }
 
-func (m memorySession) SetSession(id string, value interface{}) error {
+func (m memorySession) SetSession(_ context.Context, id string, value interface{}) error {
 	m.store.Store(id, value)
 	return nil
 }
 
-func (m memorySession) DelSession(id string) error {
+func (m memorySession) DelSession(_ context.Context, id string) error {
 	m.store.Delete(id)
 	return nil
 }

@@ -15,7 +15,7 @@
 // Package middleware is the collection of the middlewares.
 package middleware
 
-import "github.com/xgfone/ship/v5"
+import "github.com/xmx/ship"
 
 // Middleware is the alias of ship.Middleware.
 type Middleware = ship.Middleware

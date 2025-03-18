@@ -22,7 +22,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/xgfone/ship/v5/binder"
+	"github.com/xmx/ship/binder"
 )
 
 // Binder is the interface to bind the value dst to req.
@@ -82,8 +82,8 @@ func (mb *MuxBinder) Bind(dst interface{}, req *http.Request) error {
 		return ErrMissingContentType
 	}
 
-	if binder := mb.Get(ct); binder != nil {
-		return binder.Bind(dst, req)
+	if b := mb.Get(ct); b != nil {
+		return b.Bind(dst, req)
 	}
 
 	return ErrUnsupportedMediaType.Newf("not support Content-Type '%s'", ct)

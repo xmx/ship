@@ -289,7 +289,8 @@ type node struct {
 }
 
 func newNode(t kind, name, prefix, ppath string, parent *node, children []*node,
-	mh *methodHandler, pnames []string) *node {
+	mh *methodHandler, pnames []string,
+) *node {
 	n := &node{
 		kind:     t,
 		name:     name,
@@ -444,7 +445,7 @@ func NewRouter(c *Config) *Router {
 	}
 }
 
-// Path returns a url path by the path name and the parameters.
+// Path returns an url path by the path name and the parameters.
 func (r *Router) Path(name string, params ...interface{}) (url string) {
 	path := r.routes[name]
 	if path == "" {
@@ -594,7 +595,8 @@ func (r *Router) Add(name, path, method string, h interface{}) (n int, err error
 }
 
 func (r *Router) insert(name, method, ppath, prefix string,
-	t kind, h interface{}, pnames []string) {
+	t kind, h interface{}, pnames []string,
+) {
 	// Adjust max param
 	l := len(pnames)
 	if r.maxnum < l {
@@ -681,7 +683,6 @@ func (r *Router) insert(name, method, ppath, prefix string,
 			cn.AddChild(n)
 
 		} else {
-
 			// Node already exists, that's, the insert path is the current node.
 			// We override it with the new inserted route, but the parameters.
 			if h != nil {
@@ -694,7 +695,6 @@ func (r *Router) insert(name, method, ppath, prefix string,
 					cn.name = name
 				}
 			}
-
 		}
 
 		return
@@ -704,7 +704,8 @@ func (r *Router) insert(name, method, ppath, prefix string,
 // Match lookups a handler registered for method and path,
 // which also parses the path for the parameters.
 func (r *Router) Match(path, method string, pnames, pvalues []string) (
-	h interface{}, pn int) {
+	h interface{}, pn int,
+) {
 	if r.conf.RemoveTrailingSlash {
 		// path = strings.TrimRight(path, "/")
 		path = removeTrailingSlash(path)

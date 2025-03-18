@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build go1.13
 // +build go1.13
 
 package ship
@@ -24,6 +25,7 @@ import (
 
 // NewRequestWithContext is the compatibility of http.NewRequestWithContext.
 func NewRequestWithContext(ctx context.Context, method, url string,
-	body io.Reader) (*http.Request, error) {
+	body io.Reader,
+) (*http.Request, error) {
 	return http.NewRequestWithContext(ctx, method, url, body)
 }

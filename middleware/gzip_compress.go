@@ -21,7 +21,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/xgfone/ship/v5"
+	"github.com/xmx/ship"
 )
 
 // GZipConfig is used to configure the GZIP middleware.
@@ -46,13 +46,13 @@ type GZipConfig struct {
 // Gzip returns a middleware to compress the response body by GZIP.
 //
 // Notice:
-//   1. the returned gzip middleware will always compress it,
-//      no matter whether the response body is empty or not.
-//   2. the gzip middleware must be the last to handle the response.
-//      If returning an error stands for the failure result, therefore,
-//      it should be handled before compressing the response body,
-//      that's, the error handler middleware must be appended
-//      after the GZip middleware.
+//  1. the returned gzip middleware will always compress it,
+//     no matter whether the response body is empty or not.
+//  2. the gzip middleware must be the last to handle the response.
+//     If returning an error stands for the failure result, therefore,
+//     it should be handled before compressing the response body,
+//     that's, the error handler middleware must be appended
+//     after the GZip middleware.
 func Gzip(config *GZipConfig) Middleware {
 	var conf GZipConfig
 	if config != nil {

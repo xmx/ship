@@ -39,7 +39,8 @@ type RouteBuilder struct {
 }
 
 func newRouteBuilder(s *Ship, g *RouteGroupBuilder, prefix, path string,
-	data interface{}, ms ...Middleware) *RouteBuilder {
+	data interface{}, ms ...Middleware,
+) *RouteBuilder {
 	if path == "" {
 		panic("the route path must not be empty")
 	} else if path[0] != '/' {
@@ -104,7 +105,8 @@ func (r *RouteBuilder) Data(data interface{}) *RouteBuilder {
 }
 
 func (r *RouteBuilder) newRoutes(name, path string, handler Handler,
-	methods ...string) []Route {
+	methods ...string,
+) []Route {
 	if len(methods) == 0 {
 		return nil
 	}
@@ -219,10 +221,9 @@ func (r *RouteBuilder) Redirect(code int, toURL string) *RouteBuilder {
 
 // Map registers a group of methods with handlers, which is equal to
 //
-//     for method, handler := range method2handlers {
-//         r.Method(handler, method)
-//     }
-//
+//	for method, handler := range method2handlers {
+//	    r.Method(handler, method)
+//	}
 func (r *RouteBuilder) Map(method2handlers map[string]Handler) *RouteBuilder {
 	for method, handler := range method2handlers {
 		r.Method(handler, method)

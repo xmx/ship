@@ -93,7 +93,8 @@ func (h *HostManagerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *HostManagerHandler) handleHTTP(w http.ResponseWriter, r *http.Request,
-	matchedHost string, matchedHandler http.Handler) {
+	matchedHost string, matchedHandler http.Handler,
+) {
 	if matchedHandler == nil {
 		w.WriteHeader(404)
 	} else {

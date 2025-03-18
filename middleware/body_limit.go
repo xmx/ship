@@ -18,7 +18,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/xgfone/ship/v5"
+	"github.com/xmx/ship"
 )
 
 // BodyLenLimit is used to limit the maximum body of the request.

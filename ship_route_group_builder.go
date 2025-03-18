@@ -27,7 +27,8 @@ type RouteGroupBuilder struct {
 }
 
 func newRouteGroup(s *Ship, pprefix, prefix string,
-	mws ...Middleware) *RouteGroupBuilder {
+	mws ...Middleware,
+) *RouteGroupBuilder {
 	if prefix = strings.TrimSuffix(prefix, "/"); len(prefix) == 0 {
 		prefix = "/"
 	} else if prefix[0] != '/' {

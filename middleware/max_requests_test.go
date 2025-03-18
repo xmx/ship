@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/xgfone/ship/v5"
+	"github.com/xmx/ship"
 )
 
 func TestMaxRequests(t *testing.T) {

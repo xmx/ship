@@ -21,7 +21,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/xgfone/ship/v5/router/echo"
+	"github.com/xmx/ship/router/echo"
 )
 
 func TestNotFound(t *testing.T) {
@@ -56,7 +56,8 @@ func TestMethodNotAllowed(t *testing.T) {
 	router.Router = echo.NewRouter(&echo.Config{
 		MethodNotAllowedHandler: func(allowedMethods []string) interface{} {
 			return MethodNotAllowedHandler(allowedMethods)
-		}},
+		},
+	},
 	)
 	router.Route("/path").GET(OkHandler()).POST(OkHandler())
 

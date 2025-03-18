@@ -19,7 +19,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/xgfone/ship/v5"
+	"github.com/xmx/ship"
 )
 
 // CORSConfig is used to configure the CORS middleware.
@@ -74,8 +74,10 @@ func CORS(config *CORSConfig) Middleware {
 		conf.AllowOrigins = []string{"*"}
 	}
 	if len(conf.AllowMethods) == 0 {
-		conf.AllowMethods = []string{http.MethodHead, http.MethodGet,
-			http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete}
+		conf.AllowMethods = []string{
+			http.MethodHead, http.MethodGet,
+			http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete,
+		}
 	}
 
 	allowMethods := strings.Join(conf.AllowMethods, ",")

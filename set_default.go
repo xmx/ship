@@ -15,6 +15,7 @@
 package ship
 
 import (
+	"context"
 	"errors"
 	"reflect"
 	"strconv"
@@ -30,44 +31,45 @@ var (
 // Defaulter is used to set the default value if the data or the field of data
 // is ZERO.
 type Defaulter interface {
-	SetDefault(data interface{}) error
+	SetDefault(ctx context.Context, data interface{}) error
 }
 
 // DefaulterFunc is the function type implementing the interface Defaulter.
-type DefaulterFunc func(interface{}) error
+type DefaulterFunc func(context.Context, interface{}) error
 
 // SetDefault implements the interface Defaulter.
-func (d DefaulterFunc) SetDefault(data interface{}) error { return d(data) }
+func (d DefaulterFunc) SetDefault(ctx context.Context, data interface{}) error { return d(ctx, data) }
 
 // NothingDefaulter returns a Defaulter that does nothing.
 func NothingDefaulter() Defaulter { return DefaulterFunc(nothingDefaulter) }
 
-func nothingDefaulter(interface{}) error { return nil }
+func nothingDefaulter(context.Context, interface{}) error { return nil }
 
 // SetStructFieldToDefault sets the default value of the fields of the pointer
 // to struct v to the value of the tag "default" of the fields when the field
 // value is ZERO.
 //
 // For the type of the field, it only supports some base types as follow:
-//   string
-//   float32
-//   float64
-//   int
-//   int8
-//   int16
-//   int32
-//   int64
-//   uint
-//   uint8
-//   uint16
-//   uint32
-//   uint64
-//   struct
-//   struct slice
-//   interface{ SetDefault(_default interface{}) error }
-//   time.Time      // Format: A. Integer(UTC); B. String(RFC3339)
-//   time.Duration  // Format: A. Integer(ms);  B. String(time.ParseDuration)
-//   pointer to the types above
+//
+//	string
+//	float32
+//	float64
+//	int
+//	int8
+//	int16
+//	int32
+//	int64
+//	uint
+//	uint8
+//	uint16
+//	uint32
+//	uint64
+//	struct
+//	struct slice
+//	interface{ SetDefault(_default interface{}) error }
+//	time.Time      // Format: A. Integer(UTC); B. String(RFC3339)
+//	time.Duration  // Format: A. Integer(ms);  B. String(time.ParseDuration)
+//	pointer to the types above
 //
 // Notice: If the tag value starts with ".", it represents a field name and
 // the default value of current field is set to the value of that field.

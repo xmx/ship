@@ -18,7 +18,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/xgfone/ship/v5"
+	"github.com/xmx/ship"
 )
 
 const logfmt = "addr=%s, method=%s, path=%s, code=%d, starttime=%d, cost=%s, err=%v"

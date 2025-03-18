@@ -59,10 +59,12 @@ func (b *paramBinder) UnmarshalBind(param string) error {
 	return err
 }
 
-type AnonymousString string
-type AnonymousStruct struct {
-	Embed string `query:"Embed"`
-}
+type (
+	AnonymousString string
+	AnonymousStruct struct {
+		Embed string `query:"Embed"`
+	}
+)
 
 func TestBindURLValues(t *testing.T) {
 	type T struct {
@@ -144,7 +146,7 @@ func TestBindURLValues(t *testing.T) {
 		Float32:  31,
 		Float64:  32,
 		Duration: time.Second,
-		Time:     time.Date(2022, time.February, 10, 14, 12, 02, 0, time.UTC),
+		Time:     time.Date(2022, time.February, 10, 14, 12, 0o2, 0, time.UTC),
 
 		Interface1:      paramBinder{41},
 		Interface2:      &paramBinder{42},

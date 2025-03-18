@@ -47,8 +47,9 @@ func TestNewDirLoader(t *testing.T) {
 	}
 }
 
-var tmplname = "__html_template_test__.tmpl"
-var htmlTmpl = `<!DOCTYPE html>
+var (
+	tmplname = "__html_template_test__.tmpl"
+	htmlTmpl = `<!DOCTYPE html>
 <html>
 	<head>Test</head>
 	<body>
@@ -56,6 +57,8 @@ var htmlTmpl = `<!DOCTYPE html>
 	</body>
 </html>
 `
+)
+
 var htmpresp = `<!DOCTYPE html>
 <html>
 	<head>Test</head>
@@ -66,7 +69,7 @@ var htmpresp = `<!DOCTYPE html>
 `
 
 func TestNewHTMLTemplateRender(t *testing.T) {
-	err := ioutil.WriteFile(tmplname, []byte(htmlTmpl), 0600)
+	err := ioutil.WriteFile(tmplname, []byte(htmlTmpl), 0o600)
 	if err != nil {
 		t.Error(err)
 		return

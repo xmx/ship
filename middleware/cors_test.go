@@ -19,7 +19,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/xgfone/ship/v5"
+	"github.com/xmx/ship"
 )
 
 // Refer to github.com/labstack/echo/middleware#TestCORS

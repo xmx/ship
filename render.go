@@ -31,7 +31,8 @@ type RendererFunc func(http.ResponseWriter, string, int, interface{}) error
 
 // Render implements the interface Renderer.
 func (f RendererFunc) Render(w http.ResponseWriter, name string, code int,
-	data interface{}) error {
+	data interface{},
+) error {
 	return f(w, name, code, data)
 }
 
@@ -75,7 +76,8 @@ func (mr *MuxRenderer) Del(suffix string) {
 // Render implements the interface Renderer, which will get the renderer
 // the name suffix then render the content.
 func (mr *MuxRenderer) Render(w http.ResponseWriter, name string, code int,
-	data interface{}) error {
+	data interface{},
+) error {
 	if renderer := mr.Get(name); renderer != nil {
 		return renderer.Render(w, name, code, data)
 	}

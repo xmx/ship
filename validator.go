@@ -14,18 +14,20 @@
 
 package ship
 
+import "context"
+
 // Validator is used to validate the data is valid or not.
 type Validator interface {
-	Validate(data interface{}) error
+	Validate(ctx context.Context, data interface{}) error
 }
 
 // ValidatorFunc is a function type implementing the interface Validator.
-type ValidatorFunc func(data interface{}) error
+type ValidatorFunc func(ctx context.Context, data interface{}) error
 
 // Validate implements the interface Validator.
-func (v ValidatorFunc) Validate(data interface{}) error { return v(data) }
+func (v ValidatorFunc) Validate(ctx context.Context, data interface{}) error { return v(ctx, data) }
 
 // NothingValidator returns a Validator that does nothing.
 func NothingValidator() Validator { return ValidatorFunc(nothingValidator) }
 
-func nothingValidator(interface{}) error { return nil }
+func nothingValidator(context.Context, interface{}) error { return nil }

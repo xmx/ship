@@ -114,7 +114,8 @@ type HTTPClientError struct {
 
 // NewHTTPClientError returns a new HTTPClientError.
 func NewHTTPClientError(method, url string, code int, err error,
-	data ...string) HTTPClientError {
+	data ...string,
+) HTTPClientError {
 	var d string
 	if len(data) > 0 {
 		d = data[0]

@@ -28,7 +28,7 @@ import (
 // BindUnmarshaler is the interface used to wrap the UnmarshalParam method
 // to unmarshal itself from the string parameter.
 type BindUnmarshaler interface {
-	// Unmarshal decodes the argument param and assigns to itself.
+	// UnmarshalBind decodes the argument param and assigns to itself.
 	UnmarshalBind(param string) error
 }
 
@@ -37,7 +37,7 @@ type BindUnmarshaler interface {
 // Notice: tag is the name of the struct tag. such as "form", "query", etc.
 // If the tag value is equal to "-", ignore this field.
 //
-// Support the types of the struct fields as follow:
+// Support the types of the struct fields as follows:
 //   - bool
 //   - int
 //   - int8
@@ -54,13 +54,14 @@ type BindUnmarshaler interface {
 //   - float64
 //   - time.Time     // use time.Time.UnmarshalText(), so only support RFC3339 format
 //   - time.Duration // use time.ParseDuration()
+//
 // And any pointer to the type above, and
 //   - *multipart.FileHeader
 //   - []*multipart.FileHeader
 //   - interface { UnmarshalBind(param string) error }
-//
 func BindURLValuesAndFiles(ptr interface{}, data url.Values,
-	files map[string][]*multipart.FileHeader, tag string) error {
+	files map[string][]*multipart.FileHeader, tag string,
+) error {
 	value := reflect.ValueOf(ptr)
 	if value.Kind() != reflect.Ptr {
 		return fmt.Errorf("%T is not a pointer", ptr)
@@ -74,7 +75,8 @@ func BindURLValues(ptr interface{}, data url.Values, tag string) error {
 }
 
 func bindURLValues(val reflect.Value, files map[string][]*multipart.FileHeader,
-	data url.Values, tag string) (err error) {
+	data url.Values, tag string,
+) (err error) {
 	valType := val.Type()
 	if valType.Kind() != reflect.Struct {
 		return errors.New("binding element must be a struct")

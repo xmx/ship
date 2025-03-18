@@ -29,7 +29,6 @@ import (
 //   - The maximum length of the full qualified domain name is equal to 253.
 //   - The maximum length of the sub-domain name is equal to 63.
 //   - The valid characters only contain "a-zA-z0-9_-.".
-//
 var IsDomainName func(domainName string) bool = isDomainName
 
 // HostManager is used to manage the domain hosts.
@@ -87,7 +86,8 @@ func (h *lockHostManager) Range(f func(host string, handler http.Handler)) {
 }
 
 func (h *lockHostManager) AddHost(host string, handler http.Handler) (
-	http.Handler, error) {
+	http.Handler, error,
+) {
 	h.lock.Lock()
 	handler, err := h.hosts.AddHost(host, handler)
 	h.lock.Unlock()
@@ -251,7 +251,8 @@ func (h *hostManager) GetHost(host string) http.Handler {
 }
 
 func (h *hostManager) MatchHost(host string) (
-	matchedHost string, matchedHandler http.Handler) {
+	matchedHost string, matchedHandler http.Handler,
+) {
 	host = splitHost(host)
 
 	// Exact Matching

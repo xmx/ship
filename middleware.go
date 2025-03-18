@@ -23,9 +23,9 @@ type Middleware func(Handler) Handler
 //
 // Notice: the wrapped http.Handler has implemented the interface
 //
-//   type interface {
-//       HandleHTTP(http.ResponseWriter, *http.Request) error
-//   }
+//	type interface {
+//	    HandleHTTP(http.ResponseWriter, *http.Request) error
+//	}
 //
 // So it can be used to wrap the error returned by other middleware handlers.
 func NewMiddleware(handle func(http.Handler, http.ResponseWriter, *http.Request) error) Middleware {

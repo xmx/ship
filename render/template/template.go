@@ -116,7 +116,6 @@ func (l loader) LoadAll() (files []File, err error) {
 			}
 			return nil
 		})
-
 		if err != nil {
 			return
 		}
@@ -253,7 +252,8 @@ func (r *HTMLTemplateRender) execute(w io.Writer, name string, data interface{})
 
 // Render implements the interface render.Renderer.
 func (r *HTMLTemplateRender) Render(w http.ResponseWriter, name string, code int,
-	data interface{}) (err error) {
+	data interface{},
+) (err error) {
 	if r.debug {
 		if err = r.reload(); err != nil {
 			return
@@ -274,7 +274,6 @@ func (r *HTMLTemplateRender) Render(w http.ResponseWriter, name string, code int
 			w.WriteHeader(code)
 			_, err = w.Write(buf.Bytes())
 		}
-
 	}
 	buf.Reset()
 	r.bufs.Put(buf)
