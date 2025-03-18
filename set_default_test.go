@@ -58,7 +58,7 @@ func ExampleSetStructFieldToDefault() {
 	}
 
 	s := S{Structs: make([]Struct, 2)}
-	err := SetStructFieldToDefault(&s)
+	err := SetStructFieldToDefault(nil, &s)
 	fmt.Println(err)
 
 	fmt.Println(s.Ignore)

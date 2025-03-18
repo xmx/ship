@@ -74,7 +74,7 @@ func nothingDefaulter(context.Context, interface{}) error { return nil }
 // Notice: If the tag value starts with ".", it represents a field name and
 // the default value of current field is set to the value of that field.
 // But their types must be consistent, or panic.
-func SetStructFieldToDefault(v interface{}) (err error) {
+func SetStructFieldToDefault(_ context.Context, v interface{}) (err error) {
 	vf := reflect.ValueOf(v)
 	switch kind := vf.Kind(); kind {
 	case reflect.Ptr:
