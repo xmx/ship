@@ -301,57 +301,11 @@ func (c *Context) ContentLength() int64 { return c.req.ContentLength }
 //  2. If the value is "<MIME_type>/*", it will be amended as "<MIME_type>/".
 //     So it can be used to match the prefix.
 func (c *Context) Accept() []string {
-	type acceptT struct {
-		ct string
-		q  float64
-	}
+	return c.parseAccept(c.req.Header.Get(HeaderAccept))
+}
 
-	accept := c.req.Header.Get(HeaderAccept)
-	if accept == "" {
-		return nil
-	}
-
-	ss := strings.Split(accept, ",")
-	accepts := make([]acceptT, 0, len(ss))
-	for _, s := range ss {
-		q := 1.0
-		if k := strings.IndexByte(s, ';'); k > 0 {
-			qs := s[k+1:]
-			s = s[:k]
-
-			if j := strings.IndexByte(qs, '='); j > 0 {
-				if qs = qs[j+1:]; qs == "" {
-					continue
-				}
-				if v, _ := strconv.ParseFloat(qs, 32); v > 1.0 || v <= 0.0 {
-					continue
-				} else {
-					q = v
-				}
-			} else {
-				continue
-			}
-		}
-		s = strings.TrimSpace(s)
-		if s == "" {
-			continue
-		} else if s == "*/*" {
-			s = ""
-		} else if strings.HasSuffix(s, "/*") {
-			s = s[:len(s)-1]
-		}
-		accepts = append(accepts, acceptT{ct: s, q: -q})
-	}
-
-	sort.SliceStable(accepts, func(i, j int) bool {
-		return accepts[i].q < accepts[j].q
-	})
-
-	results := make([]string, len(accepts))
-	for i := range accepts {
-		results[i] = accepts[i].ct
-	}
-	return results
+func (c *Context) AcceptLanguage() []string {
+	return c.parseAccept(c.req.Header.Get(HeaderAcceptLanguage))
 }
 
 // Scheme returns the HTTP protocol scheme, `http` or `https`.
@@ -870,4 +824,57 @@ func (c *Context) Attachment(file string, name string) error {
 // If the file does not exist, it returns ErrNotFound.
 func (c *Context) Inline(file string, name string) error {
 	return c.contentDisposition(file, name, "inline")
+}
+
+func (c *Context) parseAccept(accept string) []string {
+	if accept == "" {
+		return nil
+	}
+
+	type acceptT struct {
+		ct string
+		q  float64
+	}
+
+	ss := strings.Split(accept, ",")
+	accepts := make([]acceptT, 0, len(ss))
+	for _, s := range ss {
+		q := 1.0
+		if k := strings.IndexByte(s, ';'); k > 0 {
+			qs := s[k+1:]
+			s = s[:k]
+
+			if j := strings.IndexByte(qs, '='); j > 0 {
+				if qs = qs[j+1:]; qs == "" {
+					continue
+				}
+				if v, _ := strconv.ParseFloat(qs, 32); v > 1.0 || v <= 0.0 {
+					continue
+				} else {
+					q = v
+				}
+			} else {
+				continue
+			}
+		}
+		s = strings.TrimSpace(s)
+		if s == "" {
+			continue
+		} else if s == "*/*" {
+			s = ""
+		} else if strings.HasSuffix(s, "/*") {
+			s = s[:len(s)-1]
+		}
+		accepts = append(accepts, acceptT{ct: s, q: -q})
+	}
+
+	sort.SliceStable(accepts, func(i, j int) bool {
+		return accepts[i].q < accepts[j].q
+	})
+
+	results := make([]string, len(accepts))
+	for i := range accepts {
+		results[i] = accepts[i].ct
+	}
+	return results
 }
