@@ -559,11 +559,10 @@ func (c *Context) MultipartReader() (*multipart.Reader, error) {
 // GetSession returns the session content by id from the backend store.
 //
 // If the session id does not exist, it returns ErrSessionNotExist.
-func (c *Context) GetSession(id string) (v interface{}, err error) {
+func (c *Context) GetSession(ctx context.Context, id string) (v interface{}, err error) {
 	if id == "" {
 		return nil, ErrInvalidSession
 	}
-	ctx := c.req.Context()
 	if v, err = c.Session.GetSession(ctx, id); err == nil && v == nil {
 		err = ErrSessionNotExist
 	}
@@ -572,20 +571,19 @@ func (c *Context) GetSession(id string) (v interface{}, err error) {
 }
 
 // SetSession sets the session to the backend store.
-func (c *Context) SetSession(id string, value interface{}) (err error) {
+func (c *Context) SetSession(ctx context.Context, id string, value interface{}) (err error) {
 	if id == "" || value == nil {
 		return ErrInvalidSession
 	}
-	ctx := c.req.Context()
+
 	return c.Session.SetSession(ctx, id, value)
 }
 
 // DelSession deletes the session from the backend store.
-func (c *Context) DelSession(id string) (err error) {
+func (c *Context) DelSession(ctx context.Context, id string) (err error) {
 	if id == "" {
 		return ErrInvalidSession
 	}
-	ctx := c.req.Context()
 	return c.Session.DelSession(ctx, id)
 }
 

@@ -23,13 +23,12 @@ import (
 // Logger is logger interface.
 //
 // Notice: The implementation maybe also has the method { Writer() io.Writer }
-// to get the underlynig writer.
+// to get the underlying writer.
 type Logger interface {
-	Tracef(format string, args ...interface{})
-	Debugf(format string, args ...interface{})
-	Infof(format string, args ...interface{})
-	Warnf(format string, args ...interface{})
-	Errorf(format string, args ...interface{})
+	Debug(msg string, args ...interface{})
+	Info(msg string, args ...interface{})
+	Warn(msg string, args ...interface{})
+	Error(msg string, args ...interface{})
 }
 
 // NewLoggerFromStdlog converts stdlib log to Logger.
@@ -66,22 +65,18 @@ func (l stdlog) output(level, format string, args ...interface{}) {
 	}
 }
 
-func (l stdlog) Tracef(format string, args ...interface{}) {
-	l.output("[T] ", format, args...)
-}
-
-func (l stdlog) Debugf(format string, args ...interface{}) {
+func (l stdlog) Debug(format string, args ...interface{}) {
 	l.output("[D] ", format, args...)
 }
 
-func (l stdlog) Infof(format string, args ...interface{}) {
+func (l stdlog) Info(format string, args ...interface{}) {
 	l.output("[I] ", format, args...)
 }
 
-func (l stdlog) Warnf(format string, args ...interface{}) {
+func (l stdlog) Warn(format string, args ...interface{}) {
 	l.output("[W] ", format, args...)
 }
 
-func (l stdlog) Errorf(format string, args ...interface{}) {
+func (l stdlog) Error(format string, args ...interface{}) {
 	l.output("[E] ", format, args...)
 }

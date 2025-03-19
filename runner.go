@@ -18,6 +18,7 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -208,7 +209,7 @@ func (r *Runner) startServer(certFile, keyFile string) {
 }
 
 func (r *Runner) logShutdown() {
-	if r.err == nil || r.err == http.ErrServerClosed {
+	if r.err == nil || errors.Is(r.err, http.ErrServerClosed) {
 		if r.Name == "" {
 			r.infof("The HTTP Server listening on %s is shutdown",
 				r.Server.Addr)
@@ -229,13 +230,13 @@ func (r *Runner) logShutdown() {
 
 func (r *Runner) infof(format string, args ...interface{}) {
 	if r.Logger != nil {
-		r.Logger.Infof(format, args...)
+		r.Logger.Info(fmt.Sprintf(format, args...))
 	}
 }
 
 func (r *Runner) errorf(format string, args ...interface{}) {
 	if r.Logger != nil {
-		r.Logger.Errorf(format, args...)
+		r.Logger.Error(fmt.Sprintf(format, args...))
 	}
 }
 
